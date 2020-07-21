@@ -54,6 +54,9 @@ namespace FFAU
  */
 class LevelMeterSource
 {
+    
+public:
+    int numChannelsToMeasure = 0;
 private:
     class ChannelData {
     public:
@@ -183,21 +186,45 @@ public:
     /**
      Call this method to measure a block af levels to be displayed in the meters
      */
+    
+    // br: i modified this so it can take a channel
     template<typename FloatType>
-    void measureBlock (const juce::AudioBuffer<FloatType>& buffer)
+    void measureBlock (const juce::AudioBuffer<FloatType>& buffer, int multimonoChannel = -1, int multimonoTotalChannels = -1)
     {
+        
+        // br: mod
+        bool isMeasuringMultimono = multimonoChannel >= 0 && multimonoTotalChannels > 0;
+        
         lastMeasurement = juce::Time::currentTimeMillis();
         if (! suspended) {
-            const int         numChannels = buffer.getNumChannels ();
+
+            // br: mod
+            int         numChannels = isMeasuringMultimono ? multimonoTotalChannels : buffer.getNumChannels ();
+//            int         numChannels = buffer.getNumChannels ();
             const int         numSamples  = buffer.getNumSamples ();
 
+            if (numChannelsToMeasure < numChannels)
+            {
+                numChannels = numChannelsToMeasure;
+            }
+            
             levels.resize (numChannels);
 
-            for (int channel=0; channel < numChannels; ++channel) {
-                levels [channel].setLevels (lastMeasurement,
-                                            buffer.getMagnitude (channel, 0, numSamples),
-                                            buffer.getRMSLevel  (channel, 0, numSamples),
+            if (isMeasuringMultimono)
+            {
+                levels [multimonoChannel].setLevels (lastMeasurement,
+                                            buffer.getMagnitude (0, 0, numSamples),
+                                            buffer.getRMSLevel  (0, 0, numSamples),
                                             holdMSecs);
+            }
+            else
+            {
+                for (int channel=0; channel < numChannels; ++channel) {
+                    levels [channel].setLevels (lastMeasurement,
+                                                buffer.getMagnitude (channel, 0, numSamples),
+                                                buffer.getRMSLevel  (channel, 0, numSamples),
+                                                holdMSecs);
+                }
             }
         }
     }

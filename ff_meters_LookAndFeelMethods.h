@@ -523,8 +523,11 @@ void drawMeterBar (juce::Graphics& g,
     const float rmsDb  = juce::Decibels::gainToDecibels (rms,  infinity);
     const float peakDb = juce::Decibels::gainToDecibels (peak, infinity);
 
-    const juce::Rectangle<float> floored (ceilf (bounds.getX()) + 1.0f, ceilf (bounds.getY()) + 1.0f,
-                                          floorf (bounds.getRight()) - (ceilf (bounds.getX() + 2.0f)),
+//    const juce::Rectangle<float> floored (ceilf (bounds.getX()) + 1.0f, ceilf (bounds.getY()) + 1.0f,
+//                                          floorf (bounds.getRight()) - (ceilf (bounds.getX() + 2.0f)),
+//                                          floorf (bounds.getBottom()) - (ceilf (bounds.getY()) + 2.0f));
+    const juce::Rectangle<float> floored (ceilf (bounds.getX()), ceilf (bounds.getY()) + 1.0f,
+                                          bounds.getWidth(),
                                           floorf (bounds.getBottom()) - (ceilf (bounds.getY()) + 2.0f));
 
     if (meterType & FFAU::LevelMeter::Vintage) {
