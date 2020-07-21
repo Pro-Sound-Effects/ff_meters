@@ -39,6 +39,10 @@
  ==============================================================================
  */
 
+#if defined (_MSC_VER)
+    __pragma (warning (push))
+    __pragma (warning (disable : 4244))  // disable double to float conversion warnings
+#endif
 
 // include this file inside the implementation of your LookAndFeel to get the default implementation instead of copying it there
 
@@ -776,3 +780,6 @@ juce::ColourGradient horizontalGradient;
 juce::ColourGradient verticalGradient;
 
 
+#if defined (_MSC_VER)
+    __pragma (warning (pop))
+#endif

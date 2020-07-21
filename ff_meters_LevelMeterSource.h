@@ -38,6 +38,11 @@
 #include <atomic>
 #include <vector>
 
+#if defined (_MSC_VER)
+    __pragma (warning (push))
+    __pragma (warning (disable : 4244))  // disable double to float conversion warnings
+#endif
+
 namespace FFAU
 {
 
@@ -390,3 +395,7 @@ private:
 /*@}*/
 
 } // end namespace FFAU
+
+#if defined (_MSC_VER)
+    __pragma (warning (pop))
+#endif
